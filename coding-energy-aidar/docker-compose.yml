@@ -1,0 +1,32 @@
+version: '2'
+
+services:
+
+  zookeeper:
+    image: zookeeper:3.4.10
+#    volumes:
+#      - ./data/zookeeper/data:/data:delegated
+#      - ./data/zookeeper/datalog:/datalog:delegated
+
+  kafka-local:
+    image: wurstmeister/kafka:0.11.0.1
+#    volumes:
+#      - ./data/kafka:/kafka:delegated
+    ports:
+      - 9098:9098
+    depends_on:
+      - zookeeper
+    environment:
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181/kafka
+      - KAFKA_HOST_NAME=kafka-local
+      - KAFKA_PORT=9098
+      - KAFKA_ADVERTISED_HOST_NAME=kafka-local
+      - KAFKA_ADVERTISED_PORT=9098
+      - KAFKA_BROKER_ID=1
+      - KAFKA_LOG_DIRS=/kafka
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 20000
+        hard: 75000
+
